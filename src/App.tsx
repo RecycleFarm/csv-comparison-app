@@ -285,27 +285,24 @@ function App() {
       ['country', 'count', 'yesterday_users', 'today_users']
     ];
 
-    // 국가별 통계 계산
-    const countryStats = {
-      '한국': { yesterday: {} as { [key: number]: number }, today: {} as { [key: number]: number } },
-      '미국': { yesterday: {} as { [key: number]: number }, today: {} as { [key: number]: number } },
-      '기타': { yesterday: {} as { [key: number]: number }, today: {} as { [key: number]: number } }
+    // 국가별 통계 계산 (간단한 방법)
+    const countryStats: { [key: string]: { [key: string]: { [key: number]: number } } } = {
+      '한국': { yesterday: {}, today: {} },
+      '미국': { yesterday: {}, today: {} },
+      '기타': { yesterday: {}, today: {} }
     };
 
     // 필터링된 유저들에서 국가별 통계 계산
     result.filtered_users.forEach(user => {
       const country = user.country || '기타';
-      if (countryStats[country as keyof typeof countryStats]) {
-        const yesterdayCount = user.yesterday_count;
-        const todayCount = user.today_count;
-        
+      const yesterdayCount = user.yesterday_count;
+      const todayCount = user.today_count;
+      
+      if (countryStats[country]) {
         if (yesterdayCount > 0) {
-          countryStats[country as keyof typeof countryStats].yesterday[yesterdayCount] = 
-            (countryStats[country as keyof typeof countryStats].yesterday[yesterdayCount] || 0) + 1;
+          countryStats[country].yesterday[yesterdayCount] = (countryStats[country].yesterday[yesterdayCount] || 0) + 1;
         }
-        
-        countryStats[country as keyof typeof countryStats].today[todayCount] = 
-          (countryStats[country as keyof typeof countryStats].today[todayCount] || 0) + 1;
+        countryStats[country].today[todayCount] = (countryStats[country].today[todayCount] || 0) + 1;
       }
     });
 
