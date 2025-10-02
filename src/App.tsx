@@ -293,7 +293,11 @@ function App() {
       today: {}
     };
 
+    console.log('필터링된 유저들:', result.filtered_users);
+    
     result.filtered_users.forEach(user => {
+      console.log(`유저: ${user.user_id}, 국가: ${user.country}, 어제: ${user.yesterday_count}, 오늘: ${user.today_count}`);
+      
       if (user.country === '한국') {
         if (user.yesterday_count > 0) {
           koreaStats.yesterday[user.yesterday_count] = (koreaStats.yesterday[user.yesterday_count] || 0) + 1;
@@ -301,6 +305,8 @@ function App() {
         koreaStats.today[user.today_count] = (koreaStats.today[user.today_count] || 0) + 1;
       }
     });
+
+    console.log('한국 통계:', koreaStats);
 
     // 한국 통계 추가
     const koreaCounts = Array.from(new Set([
