@@ -342,6 +342,54 @@ function App() {
     document.body.removeChild(link);
   };
 
+  const downloadCountryStatistics = () => {
+    if (!result) return;
+
+    // 국가별로 통계 계산
+    const countryStats: { [key: string]: { [key: number]: number } } = {
+      '한국': {},
+      '미국': {},
+      '기타': {}
+    };
+
+    // 필터링된 유저들에서 국가별 통계 계산
+    result.filtered_users.forEach(user => {
+      const country = user.country || '기타';
+      const todayCount = user.today_count;
+      
+      if (countryStats[country]) {
+        countryStats[country][todayCount] = (countryStats[country][todayCount] || 0) + 1;
+      }
+    });
+
+    // 각 국가별로 CSV 파일 생성
+    Object.entries(countryStats).forEach(([country, counts]) => {
+      const countryCounts = Object.keys(counts).map(Number).sort((a, b) => a - b);
+      
+      if (countryCounts.length > 0) {
+        const countryData = [
+          [`=== ${country} 통계 ===`],
+          ['count', 'users'],
+          ...countryCounts.map(count => [
+            count,
+            counts[count]
+          ])
+        ];
+
+        const csv = Papa.unparse(countryData);
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `${country}_statistics.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    });
+  };
+
   return (
     <div className="App">
       <header className="App-header">
@@ -450,6 +498,9 @@ function App() {
                 </button>
                 <button onClick={downloadStatistics} className="download-button">
                   통계 CSV 다운로드
+                </button>
+                <button onClick={downloadCountryStatistics} className="download-button">
+                  국가별 통계 CSV 다운로드
                 </button>
               </div>
 
