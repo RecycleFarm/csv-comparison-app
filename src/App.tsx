@@ -294,7 +294,7 @@ function App() {
       ['count', 'yesterday_users', 'today_users']
     ];
 
-    // 한국 통계 계산
+    // 한국 통계 계산 - 전체 데이터에서 계산
     const koreaStats: { yesterday: { [key: number]: number }, today: { [key: number]: number } } = {
       yesterday: {},
       today: {}
@@ -302,13 +302,16 @@ function App() {
 
     console.log('필터링된 유저들:', result.filtered_users);
     
+    // 전체 데이터에서 한국 유저들만 추출하여 통계 계산
     result.filtered_users.forEach(user => {
       console.log(`유저: ${user.user_id}, 국가: ${user.country}, 어제: ${user.yesterday_count}, 오늘: ${user.today_count}`);
       
       if (user.country === '한국') {
+        // 어제 통계 (어제에 데이터가 있었던 경우만)
         if (user.yesterday_count > 0) {
           koreaStats.yesterday[user.yesterday_count] = (koreaStats.yesterday[user.yesterday_count] || 0) + 1;
         }
+        // 오늘 통계 (모든 한국 유저)
         koreaStats.today[user.today_count] = (koreaStats.today[user.today_count] || 0) + 1;
       }
     });
@@ -339,14 +342,19 @@ function App() {
       today: {}
     };
 
+    // 전체 데이터에서 미국 유저들만 추출하여 통계 계산
     result.filtered_users.forEach(user => {
       if (user.country === '미국') {
+        // 어제 통계 (어제에 데이터가 있었던 경우만)
         if (user.yesterday_count > 0) {
           usaStats.yesterday[user.yesterday_count] = (usaStats.yesterday[user.yesterday_count] || 0) + 1;
         }
+        // 오늘 통계 (모든 미국 유저)
         usaStats.today[user.today_count] = (usaStats.today[user.today_count] || 0) + 1;
       }
     });
+
+    console.log('미국 통계:', usaStats);
 
     const usaCounts = Array.from(new Set([
       ...Object.keys(usaStats.yesterday).map(Number),
@@ -371,14 +379,19 @@ function App() {
       today: {}
     };
 
+    // 전체 데이터에서 기타 국가 유저들만 추출하여 통계 계산
     result.filtered_users.forEach(user => {
       if (user.country !== '한국' && user.country !== '미국') {
+        // 어제 통계 (어제에 데이터가 있었던 경우만)
         if (user.yesterday_count > 0) {
           otherStats.yesterday[user.yesterday_count] = (otherStats.yesterday[user.yesterday_count] || 0) + 1;
         }
+        // 오늘 통계 (모든 기타 국가 유저)
         otherStats.today[user.today_count] = (otherStats.today[user.today_count] || 0) + 1;
       }
     });
+
+    console.log('기타 통계:', otherStats);
 
     const otherCounts = Array.from(new Set([
       ...Object.keys(otherStats.yesterday).map(Number),
