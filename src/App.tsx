@@ -343,51 +343,72 @@ function App() {
   };
 
   const downloadCountryStatistics = () => {
-    if (!result) return;
+    console.log('국가별 통계 다운로드 시작');
+    if (!result) {
+      console.log('결과 데이터가 없습니다');
+      return;
+    }
 
-    // 국가별로 통계 계산
-    const countryStats: { [key: string]: { [key: number]: number } } = {
-      '한국': {},
-      '미국': {},
-      '기타': {}
-    };
+    try {
+      // 국가별로 통계 계산
+      const countryStats: { [key: string]: { [key: number]: number } } = {
+        '한국': {},
+        '미국': {},
+        '기타': {}
+      };
 
-    // 필터링된 유저들에서 국가별 통계 계산
-    result.filtered_users.forEach(user => {
-      const country = user.country || '기타';
-      const todayCount = user.today_count;
-      
-      if (countryStats[country]) {
-        countryStats[country][todayCount] = (countryStats[country][todayCount] || 0) + 1;
-      }
-    });
+      console.log('필터링된 유저 수:', result.filtered_users.length);
 
-    // 각 국가별로 CSV 파일 생성
-    Object.entries(countryStats).forEach(([country, counts]) => {
-      const countryCounts = Object.keys(counts).map(Number).sort((a, b) => a - b);
-      
-      if (countryCounts.length > 0) {
-        const countryData = [
-          [`=== ${country} 통계 ===`],
-          ['count', 'users'],
-          ...countryCounts.map(count => [
-            count,
-            counts[count]
-          ])
-        ];
+      // 필터링된 유저들에서 국가별 통계 계산
+      result.filtered_users.forEach(user => {
+        const country = user.country || '기타';
+        const todayCount = user.today_count;
+        
+        console.log(`유저: ${user.user_id}, 국가: ${country}, 횟수: ${todayCount}`);
+        
+        if (countryStats[country]) {
+          countryStats[country][todayCount] = (countryStats[country][todayCount] || 0) + 1;
+        }
+      });
 
-        const csv = Papa.unparse(countryData);
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
-        const url = URL.createObjectURL(blob);
-        link.setAttribute('href', url);
-        link.setAttribute('download', `${country}_statistics.csv`);
-        link.style.visibility = 'hidden';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
-    });
+      console.log('국가별 통계:', countryStats);
+
+      // 각 국가별로 CSV 파일 생성
+      Object.entries(countryStats).forEach(([country, counts]) => {
+        const countryCounts = Object.keys(counts).map(Number).sort((a, b) => a - b);
+        
+        console.log(`${country} 통계:`, countryCounts);
+        
+        if (countryCounts.length > 0) {
+          const countryData = [
+            [`=== ${country} 통계 ===`],
+            ['count', 'users'],
+            ...countryCounts.map(count => [
+              count,
+              counts[count]
+            ])
+          ];
+
+          const csv = Papa.unparse(countryData);
+          const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+          const link = document.createElement('a');
+          const url = URL.createObjectURL(blob);
+          link.setAttribute('href', url);
+          link.setAttribute('download', `${country}_statistics.csv`);
+          link.style.visibility = 'hidden';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          
+          console.log(`${country} CSV 다운로드 완료`);
+        } else {
+          console.log(`${country} 데이터가 없습니다`);
+        }
+      });
+    } catch (error) {
+      console.error('국가별 통계 다운로드 오류:', error);
+      alert('국가별 통계 다운로드 중 오류가 발생했습니다: ' + error);
+    }
   };
 
   return (
