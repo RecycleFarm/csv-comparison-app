@@ -23,6 +23,7 @@ interface Statistics {
   yesterday_stats: { [key: number]: number };
   today_stats: { [key: number]: number };
   filtered_users: ComparisonResult[];
+  all_users: ComparisonResult[]; // 전체 유저 데이터 추가
 }
 
 function App() {
@@ -190,12 +191,25 @@ function App() {
 
       // 비교 결과 생성
       const filteredUsers: ComparisonResult[] = [];
+      const allUsers: ComparisonResult[] = []; // 전체 유저 데이터
       
       todayData.forEach(user => {
         const yesterdayCount = yesterdayMap.get(user.user_id) || 0;
         const difference = user.update_count - yesterdayCount;
         
         console.log(`유저 ${user.user_id}: 어제 ${yesterdayCount}회, 오늘 ${user.update_count}회, 차이 ${difference}회`);
+        
+        // 모든 유저 데이터 저장 (필터링 여부와 관계없이)
+        const userResult = {
+          user_id: user.user_id,
+          yesterday_count: yesterdayCount,
+          today_count: user.update_count,
+          difference: difference,
+          e164: user.e164,
+          country: getCountryFromE164(user.e164 || ''),
+          deleted: user.deleted
+        };
+        allUsers.push(userResult);
         
         // 조건: (어제 0-2회 또는 신규 유저) AND 오늘 3회 이상 AND 삭제되지 않음
         const isNewUser = yesterdayCount === 0; // 어제 파일에 없던 신규 유저
@@ -206,15 +220,7 @@ function App() {
         if ((isNewUser || wasLowUsage) && isHighUsageToday && isNotDeleted) {
           const userType = isNewUser ? '신규 유저' : '기존 유저';
           console.log(`필터링됨: ${user.user_id} (${userType}, 삭제되지 않음)`);
-          filteredUsers.push({
-            user_id: user.user_id,
-            yesterday_count: yesterdayCount,
-            today_count: user.update_count,
-            difference: difference,
-            e164: user.e164,
-            country: getCountryFromE164(user.e164 || ''),
-            deleted: user.deleted
-          });
+          filteredUsers.push(userResult);
         } else if (user.deleted) {
           console.log(`제외됨: ${user.user_id} (삭제된 유저)`);
         } else if (!isHighUsageToday) {
@@ -232,7 +238,8 @@ function App() {
       setResult({
         yesterday_stats: yesterdayStats,
         today_stats: todayStats,
-        filtered_users: filteredUsers
+        filtered_users: filteredUsers,
+        all_users: allUsers
       });
     } catch (error) {
       console.error('비교 중 오류:', error);
@@ -303,7 +310,7 @@ function App() {
     console.log('필터링된 유저들:', result.filtered_users);
     
     // 전체 데이터에서 한국 유저들만 추출하여 통계 계산
-    result.filtered_users.forEach(user => {
+    result.all_users.forEach(user => {
       console.log(`유저: ${user.user_id}, 국가: ${user.country}, 어제: ${user.yesterday_count}, 오늘: ${user.today_count}`);
       
       if (user.country === '한국') {
@@ -343,7 +350,7 @@ function App() {
     };
 
     // 전체 데이터에서 미국 유저들만 추출하여 통계 계산
-    result.filtered_users.forEach(user => {
+    result.all_users.forEach(user => {
       if (user.country === '미국') {
         // 어제 통계 (어제에 데이터가 있었던 경우만)
         if (user.yesterday_count > 0) {
@@ -380,7 +387,7 @@ function App() {
     };
 
     // 전체 데이터에서 기타 국가 유저들만 추출하여 통계 계산
-    result.filtered_users.forEach(user => {
+    result.all_users.forEach(user => {
       if (user.country !== '한국' && user.country !== '미국') {
         // 어제 통계 (어제에 데이터가 있었던 경우만)
         if (user.yesterday_count > 0) {
