@@ -266,16 +266,67 @@ function App() {
   const downloadStatistics = () => {
     if (!result) return;
 
-    const statsData = [
-      ['count', 'yesterday_users', 'today_users'],
-      ...Array.from(new Set([
+    // 전체 통계 데이터
+    const allCounts = Array.from(new Set([
       ...Object.keys(result.yesterday_stats).map(Number),
       ...Object.keys(result.today_stats).map(Number)
-    ])).sort((a, b) => a - b).map(count => [
-      count,
-      result.yesterday_stats[count] || 0,
-      result.today_stats[count] || 0
-    ])];
+    ])).sort((a, b) => a - b);
+
+    const statsData = [
+      ['=== 전체 통계 ==='],
+      ['count', 'yesterday_users', 'today_users'],
+      ...allCounts.map(count => [
+        count,
+        result.yesterday_stats[count] || 0,
+        result.today_stats[count] || 0
+      ]),
+      [''],
+      ['=== 국가별 통계 ==='],
+      ['country', 'count', 'yesterday_users', 'today_users']
+    ];
+
+    // 국가별 통계 계산
+    const countryStats = {
+      '한국': { yesterday: {} as { [key: number]: number }, today: {} as { [key: number]: number } },
+      '미국': { yesterday: {} as { [key: number]: number }, today: {} as { [key: number]: number } },
+      '기타': { yesterday: {} as { [key: number]: number }, today: {} as { [key: number]: number } }
+    };
+
+    // 필터링된 유저들에서 국가별 통계 계산
+    result.filtered_users.forEach(user => {
+      const country = user.country || '기타';
+      if (countryStats[country as keyof typeof countryStats]) {
+        const yesterdayCount = user.yesterday_count;
+        const todayCount = user.today_count;
+        
+        if (yesterdayCount > 0) {
+          countryStats[country as keyof typeof countryStats].yesterday[yesterdayCount] = 
+            (countryStats[country as keyof typeof countryStats].yesterday[yesterdayCount] || 0) + 1;
+        }
+        
+        countryStats[country as keyof typeof countryStats].today[todayCount] = 
+          (countryStats[country as keyof typeof countryStats].today[todayCount] || 0) + 1;
+      }
+    });
+
+    // 국가별 통계 데이터 추가
+    Object.entries(countryStats).forEach(([country, stats]) => {
+      const countryCounts = Array.from(new Set([
+        ...Object.keys(stats.yesterday).map(Number),
+        ...Object.keys(stats.today).map(Number)
+      ])).sort((a, b) => a - b);
+
+      if (countryCounts.length > 0) {
+        countryCounts.forEach(count => {
+          statsData.push([
+            country,
+            count,
+            stats.yesterday[count] || 0,
+            stats.today[count] || 0
+          ]);
+        });
+      }
+    });
 
     const csv = Papa.unparse(statsData);
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
