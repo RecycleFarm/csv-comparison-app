@@ -320,9 +320,9 @@ function App() {
         countryCounts.forEach(count => {
           statsData.push([
             country,
-            count,
-            stats.yesterday[count] || 0,
-            stats.today[count] || 0
+            count.toString(),
+            (stats.yesterday[count] || 0).toString(),
+            (stats.today[count] || 0).toString()
           ]);
         });
       }
