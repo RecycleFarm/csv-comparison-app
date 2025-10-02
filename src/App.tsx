@@ -287,39 +287,45 @@ function App() {
       ['country', 'count', 'yesterday_users', 'today_users']
     ];
 
-    // 국가별 통계 계산
-    const countryStats: { [key: string]: { [key: number]: number } } = {
-      '한국': {},
-      '미국': {},
-      '기타': {}
-    };
+    // 국가별 통계 계산 - 간단한 방법
+    const koreaStats: { [key: number]: number } = {};
+    const usaStats: { [key: number]: number } = {};
+    const otherStats: { [key: number]: number } = {};
 
     // 필터링된 유저들에서 국가별 통계 계산
     result.filtered_users.forEach(user => {
       const country = user.country || '기타';
       const todayCount = user.today_count;
       
-      if (countryStats[country]) {
-        countryStats[country][todayCount] = (countryStats[country][todayCount] || 0) + 1;
+      if (country === '한국') {
+        koreaStats[todayCount] = (koreaStats[todayCount] || 0) + 1;
+      } else if (country === '미국') {
+        usaStats[todayCount] = (usaStats[todayCount] || 0) + 1;
+      } else {
+        otherStats[todayCount] = (otherStats[todayCount] || 0) + 1;
       }
     });
 
-    console.log('국가별 통계:', countryStats);
+    console.log('한국 통계:', koreaStats);
+    console.log('미국 통계:', usaStats);
+    console.log('기타 통계:', otherStats);
 
-    // 국가별 통계 데이터 추가
-    Object.entries(countryStats).forEach(([country, counts]) => {
-      const sortedCounts = Object.keys(counts).map(Number).sort((a, b) => a - b);
-      
-      if (sortedCounts.length > 0) {
-        sortedCounts.forEach(count => {
-          statsData.push([
-            country,
-            count.toString(),
-            '0', // 어제는 필터링된 유저이므로 0
-            counts[count].toString()
-          ]);
-        });
-      }
+    // 한국 통계 추가
+    const koreaCounts = Object.keys(koreaStats).map(Number).sort((a, b) => a - b);
+    koreaCounts.forEach(count => {
+      statsData.push(['한국', count.toString(), '0', koreaStats[count].toString()]);
+    });
+
+    // 미국 통계 추가
+    const usaCounts = Object.keys(usaStats).map(Number).sort((a, b) => a - b);
+    usaCounts.forEach(count => {
+      statsData.push(['미국', count.toString(), '0', usaStats[count].toString()]);
+    });
+
+    // 기타 통계 추가
+    const otherCounts = Object.keys(otherStats).map(Number).sort((a, b) => a - b);
+    otherCounts.forEach(count => {
+      statsData.push(['기타', count.toString(), '0', otherStats[count].toString()]);
     });
 
     console.log('최종 통계 데이터:', statsData);
