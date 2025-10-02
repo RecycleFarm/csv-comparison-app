@@ -100,6 +100,13 @@ function App() {
           console.log('첫 번째 행의 E164 값:', data[0]?.[e164Column]);
           console.log('첫 번째 행의 삭제여부 값:', data[0]?.[deletedColumn]);
           
+          // E164 값들 샘플 확인
+          const e164Samples = data.slice(0, 5).map(row => ({
+            e164: row[e164Column],
+            country: getCountryFromE164(row[e164Column] || '')
+          }));
+          console.log('E164 샘플들:', e164Samples);
+          
           const parsedData = data
             .filter(row => {
               const userId = row[userIdColumn];
