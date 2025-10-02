@@ -350,7 +350,7 @@ function App() {
     }
 
     try {
-      // 전체 데이터에서 국가별 통계 계산
+      // 필터링된 유저들에서 국가별 통계 계산
       const countryStats: { [key: string]: { yesterday: { [key: number]: number }, today: { [key: number]: number } } } = {
         '한국': { yesterday: {}, today: {} },
         '미국': { yesterday: {}, today: {} },
@@ -359,16 +359,14 @@ function App() {
 
       console.log('필터링된 유저 수:', result.filtered_users.length);
 
-      // 필터링된 유저들에서 국가별 통계 계산 (어제/오늘 모두)
+      // 필터링된 유저들에서 국가별 통계 계산
       result.filtered_users.forEach(user => {
         const country = user.country || '기타';
         const yesterdayCount = user.yesterday_count;
         const todayCount = user.today_count;
         
-        console.log(`유저: ${user.user_id}, 국가: ${country}, 어제: ${yesterdayCount}, 오늘: ${todayCount}`);
-        
         if (countryStats[country]) {
-          // 어제 통계 (0이 아닌 경우만)
+          // 어제 통계
           if (yesterdayCount > 0) {
             countryStats[country].yesterday[yesterdayCount] = (countryStats[country].yesterday[yesterdayCount] || 0) + 1;
           }
