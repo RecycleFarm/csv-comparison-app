@@ -266,6 +266,8 @@ function App() {
   const downloadStatistics = () => {
     if (!result) return;
 
+    console.log('통계 다운로드 시작:', result);
+
     // 전체 통계 데이터
     const allCounts = Array.from(new Set([
       ...Object.keys(result.yesterday_stats).map(Number),
@@ -281,49 +283,46 @@ function App() {
         result.today_stats[count] || 0
       ]),
       [''],
-      ['=== 국가별 통계 ==='],
+      ['=== 국가별 통계 (필터링된 유저 기준) ==='],
       ['country', 'count', 'yesterday_users', 'today_users']
     ];
 
-    // 국가별 통계 계산 (간단한 방법)
-    const countryStats: { [key: string]: { [key: string]: { [key: number]: number } } } = {
-      '한국': { yesterday: {}, today: {} },
-      '미국': { yesterday: {}, today: {} },
-      '기타': { yesterday: {}, today: {} }
+    // 국가별 통계 계산
+    const countryStats: { [key: string]: { [key: number]: number } } = {
+      '한국': {},
+      '미국': {},
+      '기타': {}
     };
 
     // 필터링된 유저들에서 국가별 통계 계산
     result.filtered_users.forEach(user => {
       const country = user.country || '기타';
-      const yesterdayCount = user.yesterday_count;
       const todayCount = user.today_count;
       
       if (countryStats[country]) {
-        if (yesterdayCount > 0) {
-          countryStats[country].yesterday[yesterdayCount] = (countryStats[country].yesterday[yesterdayCount] || 0) + 1;
-        }
-        countryStats[country].today[todayCount] = (countryStats[country].today[todayCount] || 0) + 1;
+        countryStats[country][todayCount] = (countryStats[country][todayCount] || 0) + 1;
       }
     });
 
-    // 국가별 통계 데이터 추가
-    Object.entries(countryStats).forEach(([country, stats]) => {
-      const countryCounts = Array.from(new Set([
-        ...Object.keys(stats.yesterday).map(Number),
-        ...Object.keys(stats.today).map(Number)
-      ])).sort((a, b) => a - b);
+    console.log('국가별 통계:', countryStats);
 
-      if (countryCounts.length > 0) {
-        countryCounts.forEach(count => {
+    // 국가별 통계 데이터 추가
+    Object.entries(countryStats).forEach(([country, counts]) => {
+      const sortedCounts = Object.keys(counts).map(Number).sort((a, b) => a - b);
+      
+      if (sortedCounts.length > 0) {
+        sortedCounts.forEach(count => {
           statsData.push([
             country,
             count.toString(),
-            (stats.yesterday[count] || 0).toString(),
-            (stats.today[count] || 0).toString()
+            '0', // 어제는 필터링된 유저이므로 0
+            counts[count].toString()
           ]);
         });
       }
     });
+
+    console.log('최종 통계 데이터:', statsData);
 
     const csv = Papa.unparse(statsData);
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
