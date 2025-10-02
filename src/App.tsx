@@ -331,19 +331,21 @@ function App() {
 
     console.log('한국 통계:', koreaStats);
 
-    // 한국 통계 추가
+    // 한국 통계 추가 - 전체 통계와 같은 방식으로 0부터 최대값까지
     const koreaCounts = Array.from(new Set([
       ...Object.keys(koreaStats.yesterday).map(Number),
       ...Object.keys(koreaStats.today).map(Number)
     ])).sort((a, b) => a - b);
 
-    koreaCounts.forEach(count => {
+    // 0부터 최대값까지 모든 횟수 포함
+    const maxKoreaCount = Math.max(...koreaCounts, 0);
+    for (let count = 0; count <= maxKoreaCount; count++) {
       statsData.push([
         count,
         koreaStats.yesterday[count] || 0,
         koreaStats.today[count] || 0
       ]);
-    });
+    }
 
     // 미국 통계 섹션 추가
     statsData.push(['']);
@@ -380,13 +382,15 @@ function App() {
       ...Object.keys(usaStats.today).map(Number)
     ])).sort((a, b) => a - b);
 
-    usaCounts.forEach(count => {
+    // 0부터 최대값까지 모든 횟수 포함
+    const maxUsaCount = Math.max(...usaCounts, 0);
+    for (let count = 0; count <= maxUsaCount; count++) {
       statsData.push([
         count,
         usaStats.yesterday[count] || 0,
         usaStats.today[count] || 0
       ]);
-    });
+    }
 
     // 기타 통계 섹션 추가
     statsData.push(['']);
@@ -417,13 +421,15 @@ function App() {
       ...Object.keys(otherStats.today).map(Number)
     ])).sort((a, b) => a - b);
 
-    otherCounts.forEach(count => {
+    // 0부터 최대값까지 모든 횟수 포함
+    const maxOtherCount = Math.max(...otherCounts, 0);
+    for (let count = 0; count <= maxOtherCount; count++) {
       statsData.push([
         count,
         otherStats.yesterday[count] || 0,
         otherStats.today[count] || 0
       ]);
-    });
+    }
 
     console.log('최종 통계 데이터:', statsData);
 
