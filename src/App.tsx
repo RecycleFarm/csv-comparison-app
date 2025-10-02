@@ -445,82 +445,6 @@ function App() {
     document.body.removeChild(link);
   };
 
-  const downloadCountryStatistics = () => {
-    console.log('국가별 통계 다운로드 시작');
-    if (!result) {
-      console.log('결과 데이터가 없습니다');
-      return;
-    }
-
-    try {
-      // 필터링된 유저들에서 국가별 통계 계산
-      const countryStats: { [key: string]: { yesterday: { [key: number]: number }, today: { [key: number]: number } } } = {
-        '한국': { yesterday: {}, today: {} },
-        '미국': { yesterday: {}, today: {} },
-        '기타': { yesterday: {}, today: {} }
-      };
-
-      console.log('필터링된 유저 수:', result.filtered_users.length);
-
-      // 필터링된 유저들에서 국가별 통계 계산
-      result.filtered_users.forEach(user => {
-        const country = user.country || '기타';
-        const yesterdayCount = user.yesterday_count;
-        const todayCount = user.today_count;
-        
-        if (countryStats[country]) {
-          // 어제 통계
-          if (yesterdayCount > 0) {
-            countryStats[country].yesterday[yesterdayCount] = (countryStats[country].yesterday[yesterdayCount] || 0) + 1;
-          }
-          // 오늘 통계
-          countryStats[country].today[todayCount] = (countryStats[country].today[todayCount] || 0) + 1;
-        }
-      });
-
-      console.log('국가별 통계:', countryStats);
-
-      // 각 국가별로 CSV 파일 생성
-      Object.entries(countryStats).forEach(([country, stats]) => {
-        const allCounts = Array.from(new Set([
-          ...Object.keys(stats.yesterday).map(Number),
-          ...Object.keys(stats.today).map(Number)
-        ])).sort((a, b) => a - b);
-        
-        console.log(`${country} 통계 - 모든 횟수:`, allCounts);
-        
-        if (allCounts.length > 0) {
-          const countryData = [
-            [`=== ${country} 통계 ===`],
-            ['count', 'yesterday_users', 'today_users'],
-            ...allCounts.map(count => [
-              count,
-              stats.yesterday[count] || 0,
-              stats.today[count] || 0
-            ])
-          ];
-
-          const csv = Papa.unparse(countryData);
-          const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-          const link = document.createElement('a');
-          const url = URL.createObjectURL(blob);
-          link.setAttribute('href', url);
-          link.setAttribute('download', `${country}_statistics.csv`);
-          link.style.visibility = 'hidden';
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          
-          console.log(`${country} CSV 다운로드 완료`);
-        } else {
-          console.log(`${country} 데이터가 없습니다`);
-        }
-      });
-    } catch (error) {
-      console.error('국가별 통계 다운로드 오류:', error);
-      alert('국가별 통계 다운로드 중 오류가 발생했습니다: ' + error);
-    }
-  };
 
   return (
     <div className="App">
@@ -630,9 +554,6 @@ function App() {
                 </button>
                 <button onClick={downloadStatistics} className="download-button">
                   통계 CSV 다운로드
-                </button>
-                <button onClick={downloadCountryStatistics} className="download-button">
-                  국가별 통계 CSV 다운로드
                 </button>
               </div>
 
