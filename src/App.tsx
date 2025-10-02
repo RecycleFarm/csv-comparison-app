@@ -308,12 +308,16 @@ function App() {
     };
 
     console.log('필터링된 유저들:', result.filtered_users);
+    console.log('전체 유저들:', result.all_users);
+    console.log('전체 유저 수:', result.all_users.length);
     
     // 전체 데이터에서 한국 유저들만 추출하여 통계 계산
+    let koreaUserCount = 0;
     result.all_users.forEach(user => {
-      console.log(`유저: ${user.user_id}, 국가: ${user.country}, 어제: ${user.yesterday_count}, 오늘: ${user.today_count}`);
-      
       if (user.country === '한국') {
+        koreaUserCount++;
+        console.log(`한국 유저: ${user.user_id}, 어제: ${user.yesterday_count}, 오늘: ${user.today_count}`);
+        
         // 어제 통계 (어제에 데이터가 있었던 경우만)
         if (user.yesterday_count > 0) {
           koreaStats.yesterday[user.yesterday_count] = (koreaStats.yesterday[user.yesterday_count] || 0) + 1;
@@ -322,6 +326,8 @@ function App() {
         koreaStats.today[user.today_count] = (koreaStats.today[user.today_count] || 0) + 1;
       }
     });
+    
+    console.log('한국 유저 수:', koreaUserCount);
 
     console.log('한국 통계:', koreaStats);
 
@@ -350,8 +356,12 @@ function App() {
     };
 
     // 전체 데이터에서 미국 유저들만 추출하여 통계 계산
+    let usaUserCount = 0;
     result.all_users.forEach(user => {
       if (user.country === '미국') {
+        usaUserCount++;
+        console.log(`미국 유저: ${user.user_id}, 어제: ${user.yesterday_count}, 오늘: ${user.today_count}`);
+        
         // 어제 통계 (어제에 데이터가 있었던 경우만)
         if (user.yesterday_count > 0) {
           usaStats.yesterday[user.yesterday_count] = (usaStats.yesterday[user.yesterday_count] || 0) + 1;
@@ -360,6 +370,8 @@ function App() {
         usaStats.today[user.today_count] = (usaStats.today[user.today_count] || 0) + 1;
       }
     });
+    
+    console.log('미국 유저 수:', usaUserCount);
 
     console.log('미국 통계:', usaStats);
 
