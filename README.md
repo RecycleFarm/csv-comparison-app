@@ -1,46 +1,249 @@
-# Getting Started with Create React App
+# CSV 비교 앱 📊
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**어제와 오늘의 CSV 파일을 비교하여 업데이트 횟수가 3회 이상 증가한 유저를 식별하는 웹 애플리케이션**
 
-## Available Scripts
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-brightgreen)](https://noahrecyclefarm.github.io/csv-comparison-app)
+[![React](https://img.shields.io/badge/React-18.2.0-blue)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-4.9.5-blue)](https://www.typescriptlang.org/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## 🚀 라이브 데모
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+**👉 [https://noahrecyclefarm.github.io/csv-comparison-app](https://noahrecyclefarm.github.io/csv-comparison-app)**
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+---
 
-### `npm test`
+## 📋 주요 기능
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### ✨ 핵심 기능
+- **📁 CSV 파일 비교**: 어제와 오늘의 CSV 파일을 업로드하여 비교
+- **🎯 스마트 필터링**: 업데이트 횟수 3회 이상 증가한 유저 자동 식별
+- **🌍 국가 자동 판별**: E164 전화번호 기반 국가 식별 (한국/미국/기타)
+- **📊 통계 생성**: 업데이트 횟수별 유저 수 통계 (전체 + 국가별)
+- **💾 CSV 다운로드**: 결과 데이터를 CSV 파일로 다운로드
 
-### `npm run build`
+### 🔍 필터링 조건
+- **기존 유저**: 어제 0, 1, 2회 → 오늘 3회 이상
+- **신규 유저**: 어제 없음 → 오늘 3회 이상
+- **삭제 제외**: 삭제되지 않은 유저만 포함
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 🎨 사용자 경험
+- **📱 반응형 디자인**: 모바일, 태블릿, 데스크톱 지원
+- **🎨 직관적 UI**: 드래그 앤 드롭 파일 업로드
+- **⚡ 실시간 처리**: 브라우저에서 즉시 결과 확인
+- **🔧 디버깅 지원**: 파싱 상태 및 컬럼 인식 결과 표시
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 🛠️ 기술 스택
 
-### `npm run eject`
+### 프론트엔드
+- **React 18.2.0** - UI 프레임워크
+- **TypeScript 4.9.5** - 타입 안전성
+- **PapaParse 5.4.1** - CSV 파싱 라이브러리
+- **CSS3** - 스타일링 및 반응형 디자인
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### 배포 및 호스팅
+- **GitHub Pages** - 정적 웹 호스팅
+- **GitHub Actions** - 자동 배포 (선택사항)
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## 📊 데이터 형식
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### 입력 CSV 파일
 
-## Learn More
+#### 필수 컬럼
+| 컬럼명 | 설명 | 예시 |
+|--------|------|------|
+| `user_id` | 유저 고유 식별자 | `user123` |
+| `사용횟수` | 업데이트 횟수 | `5` |
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+#### 선택적 컬럼
+| 컬럼명 | 설명 | 예시 |
+|--------|------|------|
+| `e164` | 국제 전화번호 | `+821012345678` |
+| `삭제` | 삭제 여부 | `false` |
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 출력 CSV 파일
+
+#### 필터링된 유저 데이터
+```csv
+user_id,yesterday_count,today_count,difference,e164,country,deleted
+user123,1,5,4,+821012345678,한국,false
+user456,0,3,3,+12125551234,미국,false
+```
+
+#### 통계 데이터
+```csv
+=== 전체 통계 ===
+count,yesterday_users,today_users
+0,100,50
+1,80,60
+...
+
+=== 한국 통계 ===
+count,yesterday_users,today_users
+0,50,25
+1,40,30
+...
+```
+
+---
+
+## 🚀 빠른 시작
+
+### 1. 로컬 개발 환경 설정
+
+```bash
+# 저장소 클론
+git clone https://github.com/NoahRecycleFarm/csv-comparison-app.git
+cd csv-comparison-app
+
+# 의존성 설치
+npm install
+
+# 개발 서버 시작
+npm start
+```
+
+### 2. 빌드 및 배포
+
+```bash
+# 프로덕션 빌드
+npm run build
+
+# GitHub Pages 배포
+npm run deploy
+```
+
+---
+
+## 📖 사용법
+
+### 1. 파일 업로드
+- **어제 파일**: 기준이 되는 이전 날짜의 CSV 파일 업로드
+- **오늘 파일**: 비교 대상인 현재 날짜의 CSV 파일 업로드
+
+### 2. 데이터 비교
+- **비교 버튼** 클릭하여 두 파일 비교 실행
+- 결과는 화면에 즉시 표시됩니다
+
+### 3. 결과 확인
+- **필터링된 유저 목록**: 조건에 맞는 유저들 미리보기
+- **통계 정보**: 업데이트 횟수별 유저 수 통계
+- **디버깅 정보**: 파싱 상태 및 컬럼 인식 결과
+
+### 4. 데이터 다운로드
+- **필터링된 유저 CSV**: 조건에 맞는 유저들의 상세 정보
+- **통계 CSV**: 전체 및 국가별 통계 데이터
+
+---
+
+## 🔧 동적 컬럼 인식
+
+앱은 다양한 컬럼명을 자동으로 인식합니다:
+
+### user_id 컬럼
+- `user_id`, `userId`, `user`, `id` 등
+
+### update_count 컬럼
+- `사용횟수`, `update_count`, `count`, `usage`, `횟수` 등
+
+### e164 컬럼
+- `e164`, `phone`, `전화` 등
+
+### deleted 컬럼
+- `삭제`, `deleted`, `delete`, `remove` 등
+
+---
+
+## 🌍 국가 판별
+
+E164 전화번호를 기반으로 자동 국가 판별:
+
+- **`+1`** → 미국 🇺🇸
+- **`+82`** → 한국 🇰🇷
+- **기타** → 기타 국가 🌍
+
+---
+
+## 🐛 문제 해결
+
+### 일반적인 문제
+
+#### 1. 데이터가 파싱되지 않음
+- **해결**: 브라우저 콘솔에서 `사용할 컬럼명` 로그 확인
+- **조치**: CSV 파일의 컬럼명이 인식 패턴에 맞는지 확인
+
+#### 2. 필터링 결과가 없음
+- **해결**: 콘솔에서 `필터링된 유저들` 로그 확인
+- **조치**: 데이터 형식 및 필터링 조건 검증
+
+#### 3. 통계가 정확하지 않음
+- **해결**: `all_users` vs `filtered_users` 사용 확인
+- **조치**: 통계 계산 로직 검증
+
+### 디버깅 팁
+- **F12** → **Console 탭**에서 상세 로그 확인
+- **Network 탭**에서 파일 업로드 상태 확인
+- **브라우저 캐시 클리어** 후 재시도
+
+---
+
+## 📚 문서
+
+- **[PRD (제품 요구사항 문서)](PRD.md)** - 제품 기능 및 요구사항
+- **[개발자 가이드](DEVELOPER_GUIDE.md)** - 개발 환경 설정 및 코드 가이드
+- **[API 문서](API_DOCUMENTATION.md)** - 데이터 구조 및 함수 설명
+- **[변경 로그](CHANGELOG.md)** - 버전별 변경사항
+
+---
+
+## 🤝 기여하기
+
+### 버그 리포트
+- [GitHub Issues](https://github.com/NoahRecycleFarm/csv-comparison-app/issues)에서 버그 리포트
+- 재현 단계와 예상 결과를 포함해주세요
+
+### 기능 요청
+- 새로운 기능 아이디어를 Issues에 제안해주세요
+- 사용 사례와 우선순위를 명시해주세요
+
+### 코드 기여
+- Fork → Feature Branch → Pull Request
+- TypeScript + React 베스트 프랙티스 준수
+
+---
+
+## 📄 라이선스
+
+이 프로젝트는 **MIT License** 하에 배포됩니다. 자세한 내용은 [LICENSE](LICENSE) 파일을 참조하세요.
+
+---
+
+## 📞 지원
+
+- **기술 지원**: [GitHub Issues](https://github.com/NoahRecycleFarm/csv-comparison-app/issues)
+- **일반 문의**: 개발팀
+- **라이브 데모**: [https://noahrecyclefarm.github.io/csv-comparison-app](https://noahrecyclefarm.github.io/csv-comparison-app)
+
+---
+
+## 🏆 주요 특징
+
+- ✅ **무료 사용**: GitHub Pages로 무료 호스팅
+- ✅ **오프라인 작동**: 서버 없이 브라우저에서 모든 처리
+- ✅ **데이터 보안**: 파일이 서버로 전송되지 않음
+- ✅ **빠른 처리**: 클라이언트 사이드에서 즉시 결과 확인
+- ✅ **유연한 형식**: 다양한 CSV 컬럼명 자동 인식
+
+---
+
+**⭐ 이 프로젝트가 도움이 되었다면 Star를 눌러주세요!**
+
+---
+
+*최종 업데이트: 2024년 12월 19일*
