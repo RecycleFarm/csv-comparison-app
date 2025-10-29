@@ -2,7 +2,7 @@
 
 **어제와 오늘의 CSV 파일을 비교하여 업데이트 횟수가 3회 이상 증가한 유저를 식별하는 웹 애플리케이션**
 
-[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-brightgreen)](https://noahrecyclefarm.github.io/csv-comparison-app)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-brightgreen)](https://recyclefarm.github.io/csv-comparison-app)
 [![React](https://img.shields.io/badge/React-18.2.0-blue)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-4.9.5-blue)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -11,7 +11,7 @@
 
 ## 🚀 라이브 데모
 
-**👉 [https://noahrecyclefarm.github.io/csv-comparison-app](https://noahrecyclefarm.github.io/csv-comparison-app)**
+**👉 [https://recyclefarm.github.io/csv-comparison-app](https://recyclefarm.github.io/csv-comparison-app)**
 
 ---
 
@@ -99,7 +99,7 @@ count,yesterday_users,today_users
 
 ```bash
 # 저장소 클론
-git clone https://github.com/NoahRecycleFarm/csv-comparison-app.git
+git clone https://github.com/RecycleFarm/csv-comparison-app.git
 cd csv-comparison-app
 
 # 의존성 설치
@@ -110,6 +110,21 @@ npm start
 ```
 
 ### 2. 빌드 및 배포
+
+#### 방법 1: GitHub Actions 자동 배포 (권장)
+
+1. **GitHub Pages 설정**
+   - GitHub 저장소 → Settings → Pages
+   - Source: "GitHub Actions" 선택
+
+2. **자동 배포**
+   - `main` 브랜치에 push하면 자동으로 배포됩니다
+   - `.github/workflows/deploy.yml` 파일이 배포를 처리합니다
+
+3. **수동 배포 트리거**
+   - GitHub 저장소 → Actions → "Deploy to GitHub Pages" → "Run workflow"
+
+#### 방법 2: 로컬에서 수동 배포
 
 ```bash
 # 프로덕션 빌드
@@ -195,6 +210,7 @@ E164 전화번호를 기반으로 자동 국가 판별:
 
 ## 📚 문서
 
+- **[배포 가이드](DEPLOYMENT.md)** - GitHub Actions를 통한 자동 배포 설정
 - **[PRD (제품 요구사항 문서)](PRD.md)** - 제품 기능 및 요구사항
 - **[개발자 가이드](DEVELOPER_GUIDE.md)** - 개발 환경 설정 및 코드 가이드
 - **[API 문서](API_DOCUMENTATION.md)** - 데이터 구조 및 함수 설명
@@ -205,7 +221,7 @@ E164 전화번호를 기반으로 자동 국가 판별:
 ## 🤝 기여하기
 
 ### 버그 리포트
-- [GitHub Issues](https://github.com/NoahRecycleFarm/csv-comparison-app/issues)에서 버그 리포트
+- [GitHub Issues](https://github.com/RecycleFarm/csv-comparison-app/issues)에서 버그 리포트
 - 재현 단계와 예상 결과를 포함해주세요
 
 ### 기능 요청
@@ -226,9 +242,9 @@ E164 전화번호를 기반으로 자동 국가 판별:
 
 ## 📞 지원
 
-- **기술 지원**: [GitHub Issues](https://github.com/NoahRecycleFarm/csv-comparison-app/issues)
+- **기술 지원**: [GitHub Issues](https://github.com/RecycleFarm/csv-comparison-app/issues)
 - **일반 문의**: 개발팀
-- **라이브 데모**: [https://noahrecyclefarm.github.io/csv-comparison-app](https://noahrecyclefarm.github.io/csv-comparison-app)
+- **라이브 데모**: [https://recyclefarm.github.io/csv-comparison-app](https://recyclefarm.github.io/csv-comparison-app)
 
 ---
 

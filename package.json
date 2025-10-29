@@ -27,7 +27,7 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
-  "homepage": "https://noah.github.io/csv-comparison-app",
+  "homepage": "https://recyclefarm.github.io/csv-comparison-app",
   "eslintConfig": {
     "extends": [
       "react-app",
